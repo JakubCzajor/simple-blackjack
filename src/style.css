@@ -5,3 +5,13 @@
 body {
     margin: 0;
 }
+
+.player--container {
+    display: flex;
+    justify-content: center;
+}
+
+.player--card > img {
+    width: 100px;
+    margin-left: -50px;
+}
