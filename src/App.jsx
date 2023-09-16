@@ -5,7 +5,7 @@ export default function App() {
 
     const [game, setGame] = useState(false)
     const [deck, setDeck] = useState({})
-    const [playerCards, setPlayerCards] = useState([{}])
+    const [playerCards, setPlayerCards] = useState([])
     const [playerCardValue, setPlayerCardValue] = useState(0)
 
     useEffect(() => {
@@ -16,20 +16,21 @@ export default function App() {
 
     function setupGame() {
         setGame(true)
+        setPlayerCards([])
+        setPlayerCardValue(0)
         drawCard(2)
     }
 
-    // useEffect(() => {
-    //     checkGameOver()
-    // }, [playerCardValue])
+    useEffect(() => {
+        checkIfGameOver()
+    }, [playerCardValue])
 
-    // function checkGameOver() {
-    //     if(playerCardValue > 21) {
-    //         setIsGameOver(true)
-    //     }
-    //     playerCardValue > 21 ? console.log("You lost") : console.log("Game still")
-        
-    // }
+    function checkIfGameOver() {
+        if(playerCardValue > 21) {
+            console.log("You lost")
+            setGame(false)
+        }
+    }
 
     const drawCard = async(num) => {
         try {
