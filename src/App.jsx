@@ -9,7 +9,7 @@ export default function App() {
     const [playerCardValue, setPlayerCardValue] = useState(0)
 
     useEffect(() => {
-        fetch("https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
+        fetch("https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=4")
         .then(res => res.json())
         .then(data => setDeck(data))
     }, [game])
@@ -58,12 +58,19 @@ export default function App() {
 
     return (
     <main>
-        {game === false ? <button onClick={setupGame}>Start Game</button> : ""}
-        <button onClick={() => drawCard(1)}>Hit</button> <br />
-        {playerCardValue}
-        <div className="player--container">
-            {cardElements}
-        </div>
+    {
+        game === false
+        ?
+        <button onClick={setupGame}>Start Game</button>
+        :
+        <>
+            <button onClick={() => drawCard(1)}>Hit</button> <br />
+            {playerCardValue}  
+            <div className="player--container">
+                {cardElements}
+            </div>
+        </>
+    }
     </main>
   )
 }
