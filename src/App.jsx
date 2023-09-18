@@ -8,6 +8,8 @@ export default function App() {
     const [deck, setDeck] = useState({})
     const [playerCards, setPlayerCards] = useState([])
     const [playerCardValue, setPlayerCardValue] = useState(0)
+    const [dealerCards, setDealerCards] = useState([])
+    const [dealerCardValue, setDealerCardValue] = useState(0)
 
     useEffect(() => {
         fetch("https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=4")
@@ -19,7 +21,10 @@ export default function App() {
         setGame(true)
         setPlayerCards([])
         setPlayerCardValue(0)
-        drawCard(2)
+        drawCard("player", 2)
+        setDealerCards([])
+        setDealerCardValue(0)
+        drawCard("dealer", 1)
     }
 
     useEffect(() => {
@@ -32,29 +37,48 @@ export default function App() {
         }
     }
 
-    const drawCard = async(num) => {
+    function dealerAI() {
+        if (dealerCardValue < 17) {
+            drawCard("dealer", 1)
+        }
+    }
+
+    function checkResults() {
+        console.log(dealerCardValue)
+        if (playerCardValue > dealerCardValue) {
+            console.log("You won")
+        } else {
+            console.log("You lost")
+        }
+        // if my cards are higher than opponent, then I win, else I lose
+    }
+
+    const drawCard = async(pl, num) => {
         try {
             const data = await (
                 await fetch(`https://www.deckofcardsapi.com/api/deck/${deck.deck_id}/draw/?count=${num}`)
             ).json()
             const newCards = data.cards
             newCards.forEach(element => {
-                setPlayerCards(oldDeck => {
-                    return [...oldDeck, element]
-                })
-                updateCardValue(element.value)
+                pl === "player" ?
+                    setPlayerCards(oldDeck => {return [...oldDeck, element]}) :
+                    setDealerCards(oldDeck => {return [...oldDeck, element]})
+                updateCardValue(pl, element.value)
             })
         } catch (err) {
             console.log(err.message)
         }
     }
 
-    function updateCardValue(card) {
+    function updateCardValue(pl, card) {
         const value = isNaN(card) ? 10 : parseInt(card)
-        setPlayerCardValue(oldValue => oldValue + value)
+        pl === "player" ?
+            setPlayerCardValue(oldValue => oldValue + value) :
+            setDealerCardValue(oldValue => oldValue + value)
     }
 
-    const cardElements = playerCards.map(card => <Card key={nanoid()} image={card.image} value={card.value} />)
+    const playerCardElements = playerCards.map(card => <Card key={nanoid()} image={card.image} value={card.value} />)
+    const dealerCardElements = dealerCards.map(card => <Card key={nanoid()} image={card.image} value={card.value} />)
 
     return (
     <main>
@@ -65,13 +89,19 @@ export default function App() {
         :
         <>
             <h1>Simple Blackjack</h1>
-            <p>Your cards value: {playerCardValue}</p> 
-            <div className="buttons-container">
-                <button className="game--button" onClick={() => drawCard(1)}>Hit</button>
-                <button className="game--button">Stand</button> 
+            <p>Your cards value: {playerCardValue}</p>
+            <p>Dealer's cards value: {dealerCardValue}</p>
+            <div className="buttons--container">
+                <button className="game--button" onClick={() => drawCard("player", 1)}>Hit</button>
+                <button className="game--button" onClick={dealerAI}>Stand</button> 
             </div>
-            <div className="player--container">
-                {cardElements}
+            <div className="card--container">
+                <div className="player--container">
+                    {playerCardElements}
+                </div>
+                <div className="player--container">
+                    {dealerCardElements}
+                </div>
             </div>
         </>
     }

@@ -15,11 +15,9 @@ main {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 450px;
-    height: 450px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
 }
 
@@ -34,6 +32,14 @@ main {
 
 .start--button:hover {
     color: #ebebeb;
+}
+
+p {
+    margin: 5px;
+}
+
+.buttons--container {
+    margin-top: 10px;
 }
 
 .game--button {
@@ -53,12 +59,19 @@ main {
     border: 1px solid #ebebeb;
 }
 
+.card--container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 150px;
+    margin-top: 30px;
+}
+
 .player--container {
     display: flex;
     justify-content: center;
 }
 
 .player--card > img {
-    width: 100px;
-    margin-left: -50px;
+    width: 85px;
+    margin-left: -60px;
 }
