@@ -4,6 +4,53 @@
 
 body {
     margin: 0;
+    background-color: #417046;
+    font-family: 'Bebas Neue', sans-serif;
+    color: white;
+    letter-spacing: 1px;
+}
+
+main {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 450px;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.start--button {
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    background-color: transparent;
+    cursor: pointer;
+    color: white;
+}
+
+.start--button:hover {
+    color: #ebebeb;
+}
+
+.game--button {
+    width: 60px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.game--button:hover {
+    color: #ebebeb;
+    border: 1px solid #ebebeb;
 }
 
 .player--container {

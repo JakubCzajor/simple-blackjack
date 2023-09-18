@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Card from "./components/Card"
+import { nanoid } from 'nanoid'
 
 export default function App() {
 
@@ -27,8 +28,7 @@ export default function App() {
 
     function checkIfGameOver() {
         if(playerCardValue > 21) {
-            console.log("You lost")
-            setGame(false)
+            // setGame(false)
         }
     }
 
@@ -54,18 +54,22 @@ export default function App() {
         setPlayerCardValue(oldValue => oldValue + value)
     }
 
-    const cardElements = playerCards.map(card => <Card image={card.image} value={card.value} />)
+    const cardElements = playerCards.map(card => <Card key={nanoid()} image={card.image} value={card.value} />)
 
     return (
     <main>
     {
         game === false
         ?
-        <button onClick={setupGame}>Start Game</button>
+        <button className="start--button" onClick={setupGame}>Start Game</button>
         :
         <>
-            <button onClick={() => drawCard(1)}>Hit</button> <br />
-            {playerCardValue}  
+            <h1>Simple Blackjack</h1>
+            <p>Your cards value: {playerCardValue}</p> 
+            <div className="buttons-container">
+                <button className="game--button" onClick={() => drawCard(1)}>Hit</button>
+                <button className="game--button">Stand</button> 
+            </div>
             <div className="player--container">
                 {cardElements}
             </div>
