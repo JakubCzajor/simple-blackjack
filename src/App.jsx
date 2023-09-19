@@ -37,14 +37,23 @@ export default function App() {
         }
     }
 
-    function dealerAI() {
-        if (dealerCardValue < 17) {
-            drawCard("dealer", 1)
+    async function dealerAI() {
+        while (dealerCardValue < 17) {
+            await drawCard("dealer", 1);
+      
+            await new Promise((resolve) => {
+                setDealerCardValue((prevValue) => {
+                    if (prevValue < 17) {
+                        resolve();
+                        return prevValue;
+                    }
+                    return prevValue;
+                });
+            });
         }
-    }
+      }
 
     function checkResults() {
-        console.log(dealerCardValue)
         if (playerCardValue > dealerCardValue) {
             console.log("You won")
         } else {
