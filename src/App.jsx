@@ -10,6 +10,7 @@ export default function App() {
     const [playerCardValue, setPlayerCardValue] = useState(0)
     const [dealerCards, setDealerCards] = useState([])
     const [dealerCardValue, setDealerCardValue] = useState(0)
+    const [dealerAIComplete, setDealerAIComplete] = useState(false);
 
     useEffect(() => {
         fetch("https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=4")
@@ -25,41 +26,56 @@ export default function App() {
         setDealerCards([])
         setDealerCardValue(0)
         drawCard("dealer", 1)
+        setDealerAIComplete(false);
     }
+
+    // useEffect(() => {
+    //     checkIfGameOver()
+    // }, [playerCardValue])
+
+    // function checkIfGameOver() {
+    //     if(playerCardValue > 21) {
+    //         // setGame(false)
+    //     }
+    // }
 
     useEffect(() => {
-        checkIfGameOver()
-    }, [playerCardValue])
-
-    function checkIfGameOver() {
-        if(playerCardValue > 21) {
-            // setGame(false)
+        if (dealerCardValue >= 17) {
+            setDealerAIComplete(true);
         }
-    }
+    }, [dealerCardValue]);
 
     async function dealerAI() {
         while (dealerCardValue < 17) {
             await drawCard("dealer", 1);
-      
-            await new Promise((resolve) => {
-                setDealerCardValue((prevValue) => {
-                    if (prevValue < 17) {
-                        resolve();
-                        return prevValue;
-                    }
-                    return prevValue;
-                });
-            });
+            await updateDealerCardValue();
         }
-      }
+    }
 
-    function checkResults() {
+    async function updateDealerCardValue() {
+        await new Promise((resolve) => {
+            setDealerCardValue((prevValue) => {
+                if (prevValue < 17) {
+                    resolve();
+                    return prevValue;
+                }
+                return prevValue;
+            });
+        });
+    }
+
+    useEffect(() => {
+        if (dealerAIComplete) {
+            checkResults();
+        }
+    }, [dealerAIComplete]);
+
+    async function checkResults() {
         if (playerCardValue > dealerCardValue) {
             console.log("You won")
         } else {
             console.log("You lost")
         }
-        // if my cards are higher than opponent, then I win, else I lose
     }
 
     const drawCard = async(pl, num) => {
@@ -89,7 +105,8 @@ export default function App() {
     const playerCardElements = playerCards.map(card => <Card key={nanoid()} image={card.image} value={card.value} />)
     const dealerCardElements = dealerCards.map(card => <Card key={nanoid()} image={card.image} value={card.value} />)
 
-    return (
+    const handleClick = dealerAIComplete === false ? () => drawCard("player", 1) : console.log()
+    return (    
     <main>
     {
         game === false
@@ -101,7 +118,7 @@ export default function App() {
             <p>Your cards value: {playerCardValue}</p>
             <p>Dealer's cards value: {dealerCardValue}</p>
             <div className="buttons--container">
-                <button className="game--button" onClick={() => drawCard("player", 1)}>Hit</button>
+                <button className="game--button" onClick={handleClick}>Hit</button>
                 <button className="game--button" onClick={dealerAI}>Stand</button> 
             </div>
             <div className="card--container">
