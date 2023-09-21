@@ -11,6 +11,7 @@ export default function App() {
     const [dealerCards, setDealerCards] = useState([])
     const [dealerCardValue, setDealerCardValue] = useState(0)
     const [dealerAIComplete, setDealerAIComplete] = useState(false);
+    const [result, setResult] = useState("")
 
     useEffect(() => {
         fetch("https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=4")
@@ -20,6 +21,7 @@ export default function App() {
 
     function setupGame() {
         setGame(true)
+        setResult("")
         setPlayerCards([])
         setPlayerCardValue(0)
         drawCard("player", 2)
@@ -29,15 +31,15 @@ export default function App() {
         setDealerAIComplete(false);
     }
 
-    // useEffect(() => {
-    //     checkIfGameOver()
-    // }, [playerCardValue])
+    useEffect(() => {
+        checkIfGameOver()
+    }, [playerCardValue])
 
-    // function checkIfGameOver() {
-    //     if(playerCardValue > 21) {
-    //         // setGame(false)
-    //     }
-    // }
+    function checkIfGameOver() {
+        if(playerCardValue > 21) {
+            setResult("lost")
+        }
+    }
 
     useEffect(() => {
         if (dealerCardValue >= 17) {
@@ -71,11 +73,9 @@ export default function App() {
     }, [dealerAIComplete]);
 
     async function checkResults() {
-        if (playerCardValue > dealerCardValue) {
-            console.log("You won")
-        } else {
-            console.log("You lost")
-        }
+        playerCardValue > dealerCardValue || dealerCardValue > 21 ? setResult("won") :
+        playerCardValue < dealerCardValue ? setResult("lost") :
+        setResult("draw")
     }
 
     const drawCard = async(pl, num) => {
@@ -109,7 +109,7 @@ export default function App() {
     return (    
     <main>
     {
-        game === false
+        game === false && result === ""
         ?
         <button className="start--button" onClick={setupGame}>Start Game</button>
         :
@@ -117,10 +117,13 @@ export default function App() {
             <h1>Simple Blackjack</h1>
             <p>Your cards value: {playerCardValue}</p>
             <p>Dealer's cards value: {dealerCardValue}</p>
+            {result != "" ?
+            <h1>{result === "draw" ? "It's a draw!" : `You ${result}!`}</h1> :
             <div className="buttons--container">
                 <button className="game--button" onClick={handleClick}>Hit</button>
                 <button className="game--button" onClick={dealerAI}>Stand</button> 
             </div>
+            }
             <div className="card--container">
                 <div className="player--container">
                     {playerCardElements}
